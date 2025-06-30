@@ -1,24 +1,37 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
-    const userId = ref<number>(-1)
-    const isLogin = ref<boolean>(false)
+    const userId = ref<number | null>(null)
+    const isLoggedIn = ref(false)
+    const error = ref<string | null>(null)
 
-    function login(id:number) {
+    // 简单登录方法
+    const login = async (id: number) => {
+        if (!id || isNaN(id)) {
+            error.value = '请输入有效的用户ID'
+            isLoggedIn.value = false
+            userId.value = null
+            return false
+        }
         userId.value = id
-        isLogin.value = true
+        isLoggedIn.value = true
+        error.value = null
+        return true
     }
 
-    function logout() {
-        userId.value = -1
-        isLogin.value = false
+    // 登出
+    const logout = () => {
+        userId.value = null
+        isLoggedIn.value = false
+        error.value = null
     }
 
     return {
         userId,
-        isLogin,
+        isLoggedIn,
+        error,
         login,
-        logout,
+        logout
     }
 })
