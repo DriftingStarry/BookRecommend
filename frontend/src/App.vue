@@ -1,8 +1,9 @@
 <script setup lang="ts">
 // 主应用组件 - 包含导航栏和路由视图
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from './stores'
+import { Top } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -20,6 +21,21 @@ const handleLogout = () => {
 const isLoggedIn = computed(() => userStore.isLoggedIn)
 const userId = computed(() => userStore.userId)
 const isLoginPage = computed(() => route.path === '/login')
+
+// 回到顶部按钮逻辑
+const showBackTop = ref(false)
+const handleScroll = () => {
+  showBackTop.value = window.scrollY > 300
+}
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <template>
@@ -64,6 +80,20 @@ const isLoginPage = computed(() => route.path === '/login')
         <p>&copy; 2024 图书推荐系统 - 基于 goodbooks-10k 数据集</p>
       </el-footer>
     </el-container>
+
+    <!-- 回到顶部按钮 -->
+    <transition name="fade">
+      <el-button
+        v-if="showBackTop"
+        class="back-top-btn"
+        circle
+        type="primary"
+        @click="scrollToTop"
+        size="large"
+      >
+        <el-icon><Top /></el-icon>
+      </el-button>
+    </transition>
   </div>
 </template>
 
@@ -142,6 +172,24 @@ const isLoginPage = computed(() => route.path === '/login')
   margin: 0;
   color: #909399;
   font-size: 14px;
+}
+
+.back-top-btn {
+  position: fixed;
+  right: 32px;
+  bottom: 48px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(64,158,255,0.15);
+  transition: opacity 0.3s;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+.fade-enter-to, .fade-leave-from {
+  opacity: 1;
 }
 
 /* 响应式设计 */
