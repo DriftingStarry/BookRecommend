@@ -33,9 +33,9 @@ export async function getBookInfo(id:number):Promise<Response<Book>> {
  * @param pageSize 每页条数
  * @returns 图书列表
  */
-export async function getBookList(page:number, pageSize:number):Promise<Response<{book:Book[],total:number}>> {
+export async function getBookList(page:number, pageSize:number):Promise<Response<{books:Book[],total:number}>> {
     const api = createBookApi()
-    const data = (await api.get<Response<{book:Book[],total:number}>>('/books', {params: {page:page, pageSize:pageSize}})).data
+    const data = (await api.get<Response<{books:Book[],total:number}>>('/books', {params: {page:page, pageSize:pageSize}})).data
     console.log(data)
     return data
 }
