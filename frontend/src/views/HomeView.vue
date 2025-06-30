@@ -2,6 +2,9 @@
 import { onMounted } from 'vue'
 import { useBookStore } from '../stores'
 import BookCard from '../components/BookCard.vue'
+import { useUserStore } from '../stores'
+
+const userStore = useUserStore()
 
 // 使用图书store
 const bookStore = useBookStore()
@@ -48,7 +51,13 @@ const handleRefresh = async () => {
 // 刷新推荐图书
 const handleRefreshRecommendations = async () => {
   try {
-    await bookStore.getBookRecommendations(1, 'user')
+    if (userStore.isLoggedIn) {
+      // 登录后根据用户ID获取推荐图书
+      await bookStore.getBookRecommendations(userStore.userId!, 'user')
+    } else {
+      // 未登录时随机获取推荐图书
+      await bookStore.getBookRecommendations(Math.floor(Math.random() * 10000), 'book')
+    }
   } catch (error) {
     console.error('刷新推荐图书失败:', error)
   }
@@ -72,7 +81,7 @@ const handleRefreshRecommendations = async () => {
     <section class="recommended-section">
       <div class="section-header">
         <h2>推荐图书</h2>
-        <p>为您精心挑选的优质图书</p>
+        <p>{{userStore.isLoggedIn ? '今日推荐' : '为您推荐 (登入后获得个性化推荐)'}}</p>
         <div class="section-actions">
           <el-button 
             type="primary" 

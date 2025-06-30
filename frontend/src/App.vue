@@ -1,10 +1,30 @@
 <script setup lang="ts">
 // 主应用组件 - 包含导航栏和路由视图
+import { computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { useUserStore } from './stores'
+
+const router = useRouter()
+const route = useRoute()
+const userStore = useUserStore()
+
+const handleLogin = () => {
+  router.push('/login')
+}
+
+const handleLogout = () => {
+  userStore.logout()
+  router.push('/login')
+}
+
+const isLoggedIn = computed(() => userStore.isLoggedIn)
+const userId = computed(() => userStore.userId)
+const isLoginPage = computed(() => route.path === '/login')
 </script>
 
 <template>
   <div id="app">
-    <el-container>
+    <el-container style="min-height: 100vh;">
       <!-- 头部 -->
       <el-header class="app-header">
         <div class="header-content">
@@ -22,6 +42,15 @@
               class="search-input"
             />
           </div>
+          <div class="user-actions">
+            <template v-if="!isLoggedIn && !isLoginPage">
+              <el-button type="primary" @click="handleLogin">登录</el-button>
+            </template>
+            <template v-else-if="isLoggedIn">
+              <span class="welcome">欢迎 {{ userId }}</span>
+              <el-button type="info" @click="handleLogout">登出</el-button>
+            </template>
+          </div>
         </div>
       </el-header>
 
@@ -32,7 +61,7 @@
 
       <!-- 底部 -->
       <el-footer class="app-footer">
-        <p>&copy; 图书推荐系统 - 基于 goodbooks-10k 数据集</p>
+        <p>&copy; 2024 图书推荐系统 - 基于 goodbooks-10k 数据集</p>
       </el-footer>
     </el-container>
   </div>
@@ -81,6 +110,18 @@
 
 .search-input {
   width: 100%;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.welcome {
+  color: #409EFF;
+  font-size: 15px;
+  margin-right: 8px;
 }
 
 .app-main {
