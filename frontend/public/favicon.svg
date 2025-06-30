@@ -1,0 +1,12 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- 书本主体 -->
+  <rect x="12" y="14" width="40" height="36" rx="6" fill="#f0f2f5" stroke="#409EFF" stroke-width="2"/>
+  <!-- 书脊 -->
+  <rect x="12" y="14" width="6" height="36" rx="3" fill="#409EFF"/>
+  <!-- 书页线 -->
+  <line x1="20" y1="20" x2="48" y2="20" stroke="#d9d9d9" stroke-width="1.2"/>
+  <line x1="20" y1="26" x2="48" y2="26" stroke="#d9d9d9" stroke-width="1.2"/>
+  <line x1="20" y1="32" x2="48" y2="32" stroke="#d9d9d9" stroke-width="1.2"/>
+  <!-- 书本图标 -->
+  <text x="32" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#409EFF">📘</text>
+</svg> 
