@@ -20,7 +20,7 @@ function createBookApi() {
  * @param id 图书ID
  * @returns 图书信息
  */
-export async function getBookInfo(id:number) {
+export async function getBookInfo(id:number):Promise<Response<Book>> {
     const api = createBookApi()
     const data = (await api.get<Response<Book>>('/book', {params: {id:id}})).data
     console.log(data)
@@ -33,9 +33,9 @@ export async function getBookInfo(id:number) {
  * @param pageSize 每页条数
  * @returns 图书列表
  */
-export async function getBookList(page:number, pageSize:number) {
+export async function getBookList(page:number, pageSize:number):Promise<Response<{book:Book[],total:number}>> {
     const api = createBookApi()
-    const data = (await api.get<Response<Book[]>>('/books', {params: {page:page, pageSize:pageSize}})).data
+    const data = (await api.get<Response<{book:Book[],total:number}>>('/books', {params: {page:page, pageSize:pageSize}})).data
     console.log(data)
     return data
 }
@@ -46,7 +46,7 @@ export async function getBookList(page:number, pageSize:number) {
  * @param by 推荐方式
  * @returns 图书推荐
  */
-export async function getBookRecommend(id:number, by:string) {
+export async function getBookRecommend(id:number, by:'user'|'book'):Promise<Response<Book[]>> {
     const api = createBookApi()
     const data = (await api.get<Response<Book[]>>('/recommend', {params: {id:id,by:by}})).data
     console.log(data)
