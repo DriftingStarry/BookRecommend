@@ -12,19 +12,13 @@ const bookStore = useBookStore()
 // 组件挂载时加载数据
 onMounted(async () => {
   try {
-    // 确保store已经初始化
-    if (!bookStore.bookList) {
-      bookStore.resetStore()
+    // 只在没有数据时才获取
+    if (bookStore.bookList.length === 0) {
+      await bookStore.fetchBookList(1, 12, true)
     }
-    
-    // 并行加载推荐图书和图书库
-    await Promise.all([
-      bookStore.getBookRecommendations(1, 'user'),
-      bookStore.fetchBookList(1, 12, true)
-    ])
-    
-    console.log('推荐图书:', bookStore.recommendedBooks)
-    console.log('图书库:', bookStore.bookList)
+    if (bookStore.homeRecommendedBooks.length === 0) {
+      await bookStore.getHomeRecommendations(1, 'user')
+    }
   } catch (error) {
     console.error('加载数据失败:', error)
   }
@@ -52,11 +46,9 @@ const handleRefresh = async () => {
 const handleRefreshRecommendations = async () => {
   try {
     if (userStore.isLoggedIn) {
-      // 登录后根据用户ID获取推荐图书
-      await bookStore.getBookRecommendations(userStore.userId!, 'user')
+      await bookStore.getHomeRecommendations(userStore.userId!, 'user')
     } else {
-      // 未登录时随机获取推荐图书
-      await bookStore.getBookRecommendations(Math.floor(Math.random() * 10000), 'book')
+      await bookStore.getHomeRecommendations(Math.floor(Math.random() * 10000), 'book')
     }
   } catch (error) {
     console.error('刷新推荐图书失败:', error)
@@ -95,7 +87,7 @@ const handleRefreshRecommendations = async () => {
       </div>
 
       <!-- 推荐图书加载状态 -->
-      <div v-if="bookStore.isLoading && (!bookStore.recommendedBooks || bookStore.recommendedBooks.length === 0)" class="loading-container">
+      <div v-if="bookStore.isLoading && (!bookStore.homeRecommendedBooks || bookStore.homeRecommendedBooks.length === 0)" class="loading-container">
         <el-skeleton :rows="3" animated />
         <el-skeleton :rows="3" animated />
         <el-skeleton :rows="3" animated />
@@ -103,9 +95,9 @@ const handleRefreshRecommendations = async () => {
       </div>
 
       <!-- 推荐图书网格 -->
-      <div v-else-if="bookStore.recommendedBooks && bookStore.recommendedBooks.length > 0" class="books-grid recommended-grid">
+      <div v-else-if="bookStore.homeRecommendedBooks && bookStore.homeRecommendedBooks.length > 0" class="books-grid recommended-grid">
         <div
-          v-for="book in bookStore.recommendedBooks"
+          v-for="book in bookStore.homeRecommendedBooks"
           :key="book.id"
           class="book-item"
         >

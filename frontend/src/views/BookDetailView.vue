@@ -15,7 +15,6 @@ const loading = ref(true)
 const error = ref('')
 
 const book = ref<Book | null>(null)
-const recommendations = ref<Book[]>([])
 
 const fetchData = async () => {
   loading.value = true
@@ -25,7 +24,7 @@ const fetchData = async () => {
     const detail = await bookStore.getBookDetail(bookId.value)
     book.value = detail
     // 获取相关推荐
-    recommendations.value = await bookStore.getBookRecommendations(bookId.value, 'book')
+    await bookStore.getDetailRecommendations(bookId.value, 'book')
   } catch (e) {
     error.value = (e instanceof Error ? e.message : '加载失败')
   } finally {
@@ -79,8 +78,8 @@ const goBackHome = () => {
       </div>
       <div class="recommend-section">
         <h3>相关推荐</h3>
-        <div v-if="recommendations && recommendations.length > 0" class="recommend-grid">
-          <BookCard v-for="rec in recommendations" :key="rec.id" :book="rec" />
+        <div v-if="bookStore.detailRecommendedBooks && bookStore.detailRecommendedBooks.length > 0" class="recommend-grid">
+          <BookCard v-for="rec in bookStore.detailRecommendedBooks" :key="rec.id" :book="rec" />
         </div>
         <el-empty v-else description="暂无相关推荐" />
       </div>

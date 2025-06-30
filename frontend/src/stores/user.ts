@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useBookStore } from './book'
 
 export const useUserStore = defineStore('user', () => {
     const userId = ref<number | null>(null)
@@ -25,6 +26,9 @@ export const useUserStore = defineStore('user', () => {
         userId.value = null
         isLoggedIn.value = false
         error.value = null
+        // 登出时重置图书store
+        const bookStore = useBookStore()
+        bookStore.resetStore()
     }
 
     return {

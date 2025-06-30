@@ -8,7 +8,9 @@ export const useBookStore = defineStore('book', () => {
   const bookDetail = ref<Book | null>(null)
   const bookList = ref<Book[]>([])
   const totalBooks = ref(0)
-  const recommendedBooks = ref<Book[]>([])
+  // 推荐分离
+  const homeRecommendedBooks = ref<Book[]>([])
+  const detailRecommendedBooks = ref<Book[]>([])
   
   // 加载状态
   const loading = ref(false)
@@ -87,17 +89,14 @@ export const useBookStore = defineStore('book', () => {
     }
   }
   
-  // 获取推荐图书
-  const getBookRecommendations = async (id: number, by: 'user'|'book') => {
+  // 获取主页推荐图书
+  const getHomeRecommendations = async (id: number, by: 'user'|'book') => {
     try {
       loading.value = true
       error.value = null
-      
       const response: Response<Book[]> = await getBookRecommend(id, by)
-      
-      // 检查响应状态码
       if (response.code === 200) {
-        recommendedBooks.value = response.data
+        homeRecommendedBooks.value = response.data
         return response.data
       } else {
         error.value = response.message || '获取推荐图书失败'
@@ -105,6 +104,26 @@ export const useBookStore = defineStore('book', () => {
       }
     } catch (err) {
       error.value = err instanceof Error ? err.message : '获取推荐图书失败'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+  // 获取详情页相关推荐
+  const getDetailRecommendations = async (id: number, by: 'user'|'book') => {
+    try {
+      loading.value = true
+      error.value = null
+      const response: Response<Book[]> = await getBookRecommend(id, by)
+      if (response.code === 200) {
+        detailRecommendedBooks.value = response.data
+        return response.data
+      } else {
+        error.value = response.message || '获取相关推荐失败'
+        throw new Error(response.message || '获取相关推荐失败')
+      }
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : '获取相关推荐失败'
       throw err
     } finally {
       loading.value = false
@@ -134,9 +153,13 @@ export const useBookStore = defineStore('book', () => {
     bookDetail.value = null
   }
   
-  // 清除推荐图书
-  const clearRecommendations = () => {
-    recommendedBooks.value = []
+  // 清除主页推荐
+  const clearHomeRecommendations = () => {
+    homeRecommendedBooks.value = []
+  }
+  // 清除详情页相关推荐
+  const clearDetailRecommendations = () => {
+    detailRecommendedBooks.value = []
   }
   
   // 重置store状态
@@ -144,7 +167,8 @@ export const useBookStore = defineStore('book', () => {
     bookDetail.value = null
     bookList.value = []
     totalBooks.value = 0
-    recommendedBooks.value = []
+    homeRecommendedBooks.value = []
+    detailRecommendedBooks.value = []
     currentPage.value = 1
     pageSize.value = 12
     loading.value = false
@@ -156,7 +180,8 @@ export const useBookStore = defineStore('book', () => {
     bookDetail,
     bookList,
     totalBooks,
-    recommendedBooks,
+    homeRecommendedBooks,
+    detailRecommendedBooks,
     loading,
     error,
     currentPage,
@@ -170,12 +195,14 @@ export const useBookStore = defineStore('book', () => {
     // 方法
     getBookDetail,
     fetchBookList,
-    getBookRecommendations,
+    getHomeRecommendations,
+    getDetailRecommendations,
     loadMoreBooks,
     refreshBookList,
     clearError,
     clearBookDetail,
-    clearRecommendations,
+    clearHomeRecommendations,
+    clearDetailRecommendations,
     resetStore
   }
 }) 
