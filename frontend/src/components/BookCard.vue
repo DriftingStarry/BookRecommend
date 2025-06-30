@@ -1,13 +1,5 @@
 <script setup lang="ts">
-interface Book {
-  id: number
-  title: string
-  author: string
-  cover?: string
-  rating?: number
-  year?: number
-  genres?: string[]
-}
+import type { Book } from '../models'
 
 interface Props {
   book: Book
@@ -21,7 +13,7 @@ defineProps<Props>()
     <div class="book-cover">
       <el-image
         :src="book.cover || '/default-book-cover.svg'"
-        fit="cover"
+        fit="contain"
         class="cover-image"
         :alt="book.title"
       >
@@ -37,12 +29,12 @@ defineProps<Props>()
     
     <div class="book-info">
       <h3 class="book-title" :title="book.title">{{ book.title }}</h3>
-      <p class="book-author" :title="book.author">{{ book.author }}</p>
+      <p class="book-author" :title="book.authors">{{ book.authors }}</p>
       
       <div class="book-meta">
-        <div v-if="book.rating" class="rating">
+        <div v-if="book.avgRating" class="rating">
           <el-rate
-            v-model="book.rating"
+            v-model="book.avgRating"
             disabled
             show-score
             text-color="#ff9900"
@@ -57,9 +49,9 @@ defineProps<Props>()
         </div>
       </div>
       
-      <div v-if="book.genres && book.genres.length > 0" class="genres">
+      <div v-if="book.tags && book.tags.length > 0" class="tags">
         <el-tag
-          v-for="genre in book.genres.slice(0, 3)"
+          v-for="genre in book.tags.slice(0, 3)"
           :key="genre"
           size="small"
           type="info"
@@ -153,7 +145,7 @@ defineProps<Props>()
   color: #909399;
 }
 
-.genres {
+.tags {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
