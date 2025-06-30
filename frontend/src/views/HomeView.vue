@@ -1,145 +1,92 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import type { Book } from '../models'
+import { onMounted } from 'vue'
+import { useBookStore } from '../stores'
 import BookCard from '../components/BookCard.vue'
 
-// 推荐图书数据
-const recommendedBooks = ref<Book[]>([
-  {
-    id: 1,
-    title: "The Hunger Games",
-    authors: "Suzanne Collins",
-    cover: "https://images.gr-assets.com/books/1447303603m/2767052.jpg",
-    avgRating: 4.3,
-    year: 2008,
-    tags: ["Young Adult", "Dystopian", "Science Fiction"],
-  },
-  {
-    id: 2,
-    title: "Harry Potter and the Philosopher's Stone",
-    authors: "J.K. Rowling",
-    cover: "https://images.gr-assets.com/books/1474154022m/3.jpg",
-    avgRating: 4.4,
-    year: 1997,
-    tags: ["Fantasy", "Young Adult", "Adventure"],
-  },
-  {
-    id: 3,
-    title: "To Kill a Mockingbird",
-    authors: "Harper Lee",
-    cover: "https://images.gr-assets.com/books/1553383690m/2657.jpg",
-    avgRating: 4.2,
-    year: 1960,
-    tags: ["Classic", "Fiction", "Historical"],
-  },
-  {
-    id: 4,
-    title: "The Great Gatsby",
-    authors: "F. Scott Fitzgerald",
-    cover: "https://images.gr-assets.com/books/1490528560m/4671.jpg",
-    avgRating: 3.9,
-    year: 1925,
-    tags: ["Classic", "Fiction", "Historical"],
+// 使用图书store
+const bookStore = useBookStore()
+
+// 组件挂载时加载数据
+onMounted(async () => {
+  try {
+    // 确保store已经初始化
+    if (!bookStore.bookList) {
+      bookStore.resetStore()
+    }
+    
+    // 并行加载推荐图书和图书库
+    await Promise.all([
+      bookStore.getBookRecommendations(1, 'user'),
+      bookStore.fetchBookList(1, 12, true)
+    ])
+    
+    console.log('推荐图书:', bookStore.recommendedBooks)
+    console.log('图书库:', bookStore.bookList)
+  } catch (error) {
+    console.error('加载数据失败:', error)
   }
-])
-
-// 图书库数据
-const libraryBooks = ref<Book[]>([
-  {
-    id: 5,
-    title: "1984",
-    authors: "George Orwell",
-    cover: "https://images.gr-assets.com/books/1532714506m/40961427.jpg",
-    avgRating: 4.1,
-    year: 1949,
-    tags: ["Dystopian", "Science Fiction", "Political"],
-  },
-  {
-    id: 6,
-    title: "The Hobbit",
-    authors: "J.R.R. Tolkien",
-    cover: "https://images.gr-assets.com/books/1372847500m/5907.jpg",
-    avgRating: 4.2,
-    year: 1937,
-    tags: ["Fantasy", "Adventure", "Fiction"],
-  },
-  {
-    id: 7,
-    title: "Pride and Prejudice",
-    authors: "Jane Austen",
-    cover: "https://images.gr-assets.com/books/1320399351m/1885.jpg",
-    avgRating: 4.1,
-    year: 1813,
-    tags: ["Classic", "Romance", "Historical"],
-  },
-  {
-    id: 8,
-    title: "The Catcher in the Rye",
-    authors: "J.D. Salinger",
-    cover: "https://images.gr-assets.com/books/1398034300m/5107.jpg",
-    avgRating: 3.8,
-    year: 1951,
-    tags: ["Classic", "Fiction", "Coming of Age"],
-  },
-  {
-    id: 9,
-    title: "Lord of the Flies",
-    authors: "William Golding",
-    cover: "https://images.gr-assets.com/books/1327949360m/7624.jpg",
-    avgRating: 3.7,
-    year: 1954,
-    tags: ["Classic", "Fiction", "Allegory"],
-  },
-  {
-    id: 10,
-    title: "Animal Farm",
-    authors: "George Orwell",
-    cover: "https://images.gr-assets.com/books/1424037542m/7613.jpg",
-    avgRating: 3.9,
-    year: 1945,
-    tags: ["Classic", "Political", "Allegory"],
-  },
-  {
-    id: 11,
-    title: "The Alchemist",
-    authors: "Paulo Coelho",
-    cover: "https://images.gr-assets.com/books/1483412266m/865.jpg",
-    avgRating: 3.9,
-    year: 1988,
-    tags: ["Fiction", "Adventure", "Philosophy"],
-  },
-  {
-    id: 12,
-    title: "The Book Thief",
-    authors: "Markus Zusak",
-    cover: "https://images.gr-assets.com/books/1327942880m/19063.jpg",
-    avgRating: 4.3,
-    year: 2005,
-    tags: ["Historical Fiction", "Young Adult", "War"],
-  }
-])
-
-const loading = ref(true)
-
-onMounted(() => {
-  // 模拟加载延迟
-  setTimeout(() => {
-    loading.value = false
-  }, 1000)
 })
+
+// 加载更多图书
+const handleLoadMore = async () => {
+  try {
+    await bookStore.loadMoreBooks()
+  } catch (error) {
+    console.error('加载更多图书失败:', error)
+  }
+}
+
+// 刷新图书列表
+const handleRefresh = async () => {
+  try {
+    await bookStore.refreshBookList()
+  } catch (error) {
+    console.error('刷新图书列表失败:', error)
+  }
+}
+
+// 刷新推荐图书
+const handleRefreshRecommendations = async () => {
+  try {
+    await bookStore.getBookRecommendations(1, 'user')
+  } catch (error) {
+    console.error('刷新推荐图书失败:', error)
+  }
+}
 </script>
 
 <template>
   <div class="home-view">
+    <!-- 错误提示 -->
+    <div v-if="bookStore.hasError" class="error-message">
+      <el-alert
+        :title="bookStore.error"
+        type="error"
+        show-icon
+        closable
+        @close="bookStore.clearError"
+      />
+    </div>
+
     <!-- 推荐图书部分 -->
     <section class="recommended-section">
       <div class="section-header">
         <h2>推荐图书</h2>
         <p>为您精心挑选的优质图书</p>
+        <div class="section-actions">
+          <el-button 
+            type="primary" 
+            size="small"
+            :loading="bookStore.isLoading"
+            @click="handleRefreshRecommendations"
+          >
+            刷新推荐
+          </el-button>
+        </div>
       </div>
 
       <!-- 推荐图书加载状态 -->
-      <div v-if="loading" class="loading-container">
+      <div v-if="bookStore.isLoading && (!bookStore.recommendedBooks || bookStore.recommendedBooks.length === 0)" class="loading-container">
         <el-skeleton :rows="3" animated />
         <el-skeleton :rows="3" animated />
         <el-skeleton :rows="3" animated />
@@ -147,14 +94,19 @@ onMounted(() => {
       </div>
 
       <!-- 推荐图书网格 -->
-      <div v-else class="books-grid recommended-grid">
+      <div v-else-if="bookStore.recommendedBooks && bookStore.recommendedBooks.length > 0" class="books-grid recommended-grid">
         <div
-          v-for="book in recommendedBooks"
+          v-for="book in bookStore.recommendedBooks"
           :key="book.id"
           class="book-item"
         >
           <BookCard :book="book" />
         </div>
+      </div>
+
+      <!-- 推荐图书空状态 -->
+      <div v-else-if="!bookStore.isLoading" class="empty-state">
+        <el-empty description="暂无推荐图书" />
       </div>
     </section>
 
@@ -164,19 +116,19 @@ onMounted(() => {
         <h2>图书库</h2>
         <p>探索更多精彩图书</p>
         <div class="section-actions">
-          <el-button type="primary" size="small">
-            <el-icon><Search /></el-icon>
-            搜索图书
-          </el-button>
-          <el-button size="small">
-            <el-icon><Filter /></el-icon>
-            筛选
+          <el-button 
+            type="primary" 
+            size="small"
+            :loading="bookStore.isLoading"
+            @click="handleRefresh"
+          >
+            刷新列表
           </el-button>
         </div>
       </div>
 
       <!-- 图书库加载状态 -->
-      <div v-if="loading" class="loading-container">
+      <div v-if="bookStore.isLoading && (!bookStore.bookList || bookStore.bookList.length === 0)" class="loading-container">
         <el-skeleton :rows="3" animated />
         <el-skeleton :rows="3" animated />
         <el-skeleton :rows="3" animated />
@@ -188,9 +140,9 @@ onMounted(() => {
       </div>
 
       <!-- 图书库网格 -->
-      <div v-else class="books-grid library-grid">
+      <div v-else-if="bookStore.bookList && bookStore.bookList.length > 0" class="books-grid library-grid">
         <div
-          v-for="book in libraryBooks"
+          v-for="book in bookStore.bookList"
           :key="book.id"
           class="book-item"
         >
@@ -198,11 +150,27 @@ onMounted(() => {
         </div>
       </div>
 
+      <!-- 图书库空状态 -->
+      <div v-else-if="!bookStore.isLoading" class="empty-state">
+        <el-empty description="暂无图书数据" />
+      </div>
+
       <!-- 加载更多按钮 -->
-      <div class="load-more">
-        <el-button type="primary" size="large" :loading="loading">
-          加载更多图书
+      <div v-if="bookStore.bookList && bookStore.bookList.length > 0" class="load-more">
+        <el-button 
+          type="primary" 
+          size="large" 
+          :loading="bookStore.isLoading"
+          :disabled="!bookStore.hasMoreBooks"
+          @click="handleLoadMore"
+        >
+          {{ bookStore.hasMoreBooks ? '加载更多图书' : '已加载全部图书' }}
         </el-button>
+      </div>
+
+      <!-- 加载状态指示器 -->
+      <div v-if="bookStore.isLoading && bookStore.bookList && bookStore.bookList.length > 0" class="loading-indicator">
+        <el-skeleton :rows="1" animated />
       </div>
     </section>
   </div>
@@ -213,6 +181,10 @@ onMounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+}
+
+.error-message {
+  margin-bottom: 20px;
 }
 
 /* 通用部分样式 */
@@ -272,6 +244,16 @@ onMounted(() => {
 .load-more {
   text-align: center;
   margin-top: 40px;
+}
+
+.empty-state {
+  text-align: center;
+  margin: 60px 0;
+}
+
+.loading-indicator {
+  text-align: center;
+  margin-top: 20px;
 }
 
 /* 推荐图书部分 */
@@ -337,6 +319,18 @@ onMounted(() => {
   .recommended-section {
     margin-bottom: 40px;
     padding-bottom: 30px;
+  }
+
+  .load-more {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .load-more .el-button {
+    width: 100%;
+    max-width: 200px;
   }
 }
 
