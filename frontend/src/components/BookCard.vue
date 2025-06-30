@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import type { Book } from '../models'
 
-interface Props {
-  book: Book
-}
+const props = defineProps<{ book: Book }>()
 
-defineProps<Props>()
+const router = useRouter()
+const goToDetail = () => {
+  router.push(`/book/${props.book.id}`)
+}
 </script>
 
 <template>
-  <el-card class="book-card" shadow="hover">
+  <el-card class="book-card" shadow="hover" @click="goToDetail">
     <div class="book-cover">
       <el-image
         :src="book.cover || '/default-book-cover.svg'"
@@ -174,5 +176,19 @@ defineProps<Props>()
     align-items: flex-start;
     gap: 8px;
   }
+}
+
+.card-actions {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.book-card {
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.book-card:hover {
+  box-shadow: 0 4px 16px rgba(64,158,255,0.18);
 }
 </style> 
