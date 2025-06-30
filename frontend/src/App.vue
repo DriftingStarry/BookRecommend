@@ -32,7 +32,7 @@
 
       <!-- 底部 -->
       <el-footer class="app-footer">
-        <p>&copy; 2024 图书推荐系统 - 基于 goodbooks-10k 数据集</p>
+        <p>&copy; 图书推荐系统 - 基于 goodbooks-10k 数据集</p>
       </el-footer>
     </el-container>
   </div>
