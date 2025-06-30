@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useBookStore } from '../stores'
 import type { Book } from '../models'
 import BookCard from '../components/BookCard.vue'
+import { ArrowLeft } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -40,14 +41,20 @@ watch(() => route.params.id, (newId) => {
 
 const goToGoodreads = () => {
   if (book.value && book.value.goodreadsId) {
-    window.open(`https://www.goodreads.com/book/show/${book.value.goodreadsId}`)
-    // window.open(`https://www.goodreads.com/book/show/2767052`)
+    window.open(`https://www.goodreads.com/book/show/${book.value.goodreadsId}`, '_blank')
   }
+}
+
+const goBackHome = () => {
+  router.push('/')
 }
 </script>
 
 <template>
   <div class="book-detail-view">
+    <el-button class="back-btn" circle size="large" @click="goBackHome">
+      <el-icon><ArrowLeft /></el-icon>
+    </el-button>
     <el-card v-if="loading" class="loading-card">
       <el-skeleton :rows="6" animated />
     </el-card>
@@ -86,6 +93,15 @@ const goToGoodreads = () => {
   max-width: 900px;
   margin: 32px auto;
   padding: 0 12px;
+  position: relative;
+}
+.back-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(64,158,255,0.12);
 }
 .detail-card {
   padding: 32px 24px;
