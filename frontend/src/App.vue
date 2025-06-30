@@ -50,14 +50,14 @@ onUnmounted(() => {
             </el-icon>
             <h1>图书推荐系统</h1>
           </div>
-          <div class="search-box">
+          <!-- <div class="search-box">
             <el-input
               placeholder="搜索图书..."
               prefix-icon="Search"
               clearable
               class="search-input"
             />
-          </div>
+          </div> -->
           <div class="user-actions">
             <template v-if="!isLoggedIn && !isLoginPage">
               <el-button type="primary" @click="handleLogin">登录</el-button>
