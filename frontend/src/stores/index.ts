@@ -3,3 +3,4 @@
  */
 
 export { useBookStore } from './book' 
+export { useUserStore } from './user'
