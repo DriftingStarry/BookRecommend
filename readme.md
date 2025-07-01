@@ -36,10 +36,18 @@ python flask
 |------|------|
 |用户 id|书籍 id|
 
-#### 推荐书籍表 recommend
+#### 用户推荐书籍表 userRecommend
 
 > 存储用户的个性推荐, 定时更新
 
 |userId|bookId|
 |------|------|
 |用户 id|书籍 id|
+
+#### 书籍推荐书籍表 bookRecommend
+
+> 根据书籍推荐书籍, 定时更新
+
+|bookId|recBookId|
+|------|------|
+|当前书籍 id|推荐书籍 id|
