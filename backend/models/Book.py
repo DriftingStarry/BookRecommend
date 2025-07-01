@@ -12,13 +12,13 @@ class Book:
     """语言"""
     lang: str
     """评分数量"""
-    ratingsCount: str
+    ratingsCount: int
     """书名"""
     title: str
     """发布年份"""
     year: int
 
-    def __init__(self, authors: str, avgRating: float, cover: str, goodreadsId: str, id: int, lang: str, ratingsCount: str, title: str, year: int) -> None:
+    def __init__(self, authors: str, avgRating: float, cover: str, goodreadsId: str, id: int, lang: str, ratingsCount: int, title: str, year: int) -> None:
         self.authors = authors
         self.avgRating = avgRating
         self.cover = cover
