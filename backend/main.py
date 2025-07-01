@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from models.books import Book
+from models.Book import Book
+import service.book as bookService
 
 app = Flask(__name__)
 CORS(app)  # 启用跨域支持，方便前端调用
@@ -17,69 +18,42 @@ def test():
 @app.route('/book', methods=['GET'])
 def getBookInfo():
     """获取书籍信息"""
-    print(request.args.get('id'))
+    id = int(request.args.get('id'))
+    book = bookService.getBookInfo(id)
     return jsonify({
         "code": 200,
         "msg": "获取书籍信息成功",
-        "data": Book(
-            authors="yee",
-            avgRating=1.0,
-            cover="yee",
-            goodreadsId="yee",
-            id=1,
-            lang="yee",
-            ratingsCount="yee",
-            title="yee",
-            year=2025
-        ).to_dict()
+        "data": book.to_dict()
     })
 
 @app.route('/books', methods=['GET'])
 def getBooks():
     """获取书籍列表"""
-    print(request.args.get('page'))
-    print(request.args.get('pageSize'))
+    page = int(request.args.get('page'))
+    pageSize = int(request.args.get('pageSize'))
+    books, total = bookService.getBooks(page, pageSize)
     return jsonify({
         "code": 200,
         "msg": "获取书籍列表成功",
         "data": {
             "books": [
-                Book(
-                    authors="yee",
-                    avgRating=1.0,
-                    cover="yee",
-                    goodreadsId="yee",
-                    id=1,
-                    lang="yee",
-                    ratingsCount="yee",
-                    title="yee",
-                    year=2025
-                ).to_dict()
+                book.to_dict() for book in books
             ],
-            "total": 100
+            "total": total
         }
     })
 
 @app.route('/recommend', methods=['GET'])
 def getRecommend():
     """获取推荐书籍"""
-    print(request.args.get('by'))
-    print(request.args.get('id'))
+    by = request.args.get('by')
+    id = int(request.args.get('id'))
+    books = bookService.getBookRecommend(by, id)
     return jsonify({
         "code": 200,
         "msg": "获取推荐书籍成功",
         "data": [
-            Book(
-                authors="yee",
-                avgRating=1.0,
-                cover="yee",
-                goodreadsId="yee",
-                id=1,
-                lang="yee",
-                ratingsCount="yee",
-                title="yee",
-                year=2025
-            ).to_dict()
+            book.to_dict() for book in books
         ]
     })
 
