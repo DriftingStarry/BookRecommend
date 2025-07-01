@@ -32,3 +32,6 @@ coverage
 
 # python cache
 __pycache__
+
+# 原始数据
+backend/utils/origin_data
