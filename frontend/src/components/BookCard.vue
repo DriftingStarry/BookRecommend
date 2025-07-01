@@ -8,6 +8,14 @@ const router = useRouter()
 const goToDetail = () => {
   router.push(`/book/${props.book.id}`)
 }
+
+const formatCount = (count: number | string | undefined) => {
+  if (!count || isNaN(Number(count))) return ''
+  const n = Number(count)
+  if (n >= 10000) return (n / 10000).toFixed(1).replace(/\.0$/, '') + '万'
+  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + '千'
+  return n.toLocaleString()
+}
 </script>
 
 <template>
@@ -43,6 +51,9 @@ const goToDetail = () => {
             score-template="{value}"
             :max="5"
           />
+          <p v-if="book.ratingsCount" class="ratings-count">
+            {{ formatCount(book.ratingsCount) }}<span v-if="formatCount(book.ratingsCount)">人评分</span>
+          </p>
         </div>
         
         <div v-if="book.year" class="year">
@@ -190,5 +201,12 @@ const goToDetail = () => {
 
 .book-card:hover {
   box-shadow: 0 4px 16px rgba(64,158,255,0.18);
+}
+
+.ratings-count {
+  font-size: 12px;
+  color: #909399;
+  margin: 4px 0 0 0;
+  line-height: 1.2;
 }
 </style> 

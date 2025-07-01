@@ -47,6 +47,14 @@ const goToGoodreads = () => {
 const goBackHome = () => {
   router.push('/')
 }
+
+const formatCount = (count: number | string | undefined) => {
+  if (!count || isNaN(Number(count))) return ''
+  const n = Number(count)
+  if (n >= 10000) return (n / 10000).toFixed(1).replace(/\.0$/, '') + '万'
+  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + '千'
+  return n.toLocaleString()
+}
 </script>
 
 <template>
@@ -70,6 +78,9 @@ const goBackHome = () => {
           <p>作者：{{ book.authors }}</p>
           <p v-if="book.year">出版年份：{{ book.year }}</p>
           <p v-if="book.avgRating">评分：{{ book.avgRating }}</p>
+          <p v-if="book.ratingsCount" class="ratings-count">
+            {{ formatCount(book.ratingsCount) }}<span v-if="formatCount(book.ratingsCount)">人评分</span>
+          </p>
           <p v-if="book.tags && book.tags.length">标签：
             <el-tag v-for="tag in book.tags" :key="tag" size="small" style="margin-right:4px">{{ tag }}</el-tag>
           </p>
@@ -153,5 +164,11 @@ const goBackHome = () => {
 .loading-card, .error-card {
   margin: 32px auto;
   max-width: 500px;
+}
+.ratings-count {
+  font-size: 13px;
+  color: #909399;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
 }
 </style> 
