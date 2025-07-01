@@ -29,3 +29,6 @@ coverage
 */.vite
 
 *.tsbuildinfo
+
+# python cache
+__pycache__
