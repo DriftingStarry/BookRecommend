@@ -21,7 +21,9 @@ use_columns = [
     'title',
     'language_code',
     'original_publication_year',
-    'average_rating'
+    'average_rating',
+    'image_url',
+    'ratings_count'
 ]
 field_map = {
     'book_id': 'id',
@@ -64,15 +66,17 @@ CREATE TABLE IF NOT EXISTS {MYSQL_TABLE} (
     title VARCHAR(255),
     lang VARCHAR(20),
     year INT,
-    avgRating FLOAT
+    avgRating FLOAT,
+    cover TEXT,
+    ratingsCount INT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 """
 cursor.execute(create_table_sql)
 
 # 插入语句
 insert_sql = f"""
-INSERT INTO {MYSQL_TABLE} (id, goodreadsId, authors, title, lang, year, avgRating)
-VALUES (%s, %s, %s, %s, %s, %s, %s)
+INSERT INTO {MYSQL_TABLE} (id, goodreadsId, authors, title, lang, year, avgRating, cover, ratingsCount)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON DUPLICATE KEY UPDATE
     goodreadsId=VALUES(goodreadsId),
     authors=VALUES(authors),
@@ -90,7 +94,7 @@ for chunk in pd.read_csv(csv_path, usecols=use_columns, chunksize=chunksize):
     data = []
     for idx, row in chunk.iterrows():
         nan_fields = []
-        for col in ['id', 'goodreadsId', 'authors', 'title', 'lang', 'year', 'avgRating']:
+        for col in ['id', 'goodreadsId', 'authors', 'title', 'lang', 'year', 'avgRating', 'image_url', 'ratings_count']:
             if pd.isnull(row[col]) or (isinstance(row[col], float) and math.isnan(row[col])):
                 nan_fields.append(col)
         if nan_fields:
@@ -103,7 +107,9 @@ for chunk in pd.read_csv(csv_path, usecols=use_columns, chunksize=chunksize):
             safe_str(row['title']),
             safe_str(row['lang']),
             safe_int(row['year']),
-            safe_float(row['avgRating'])
+            safe_float(row['avgRating']),
+            safe_str(row['image_url']),
+            safe_int(row['ratings_count'])
         ))
     cursor.executemany(insert_sql, data)
     conn.commit()
