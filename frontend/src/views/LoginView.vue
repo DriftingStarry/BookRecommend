@@ -2,8 +2,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores'
+import { useBookStore } from '../stores'
 
 const userStore = useUserStore()
+const bookStore = useBookStore()
 const router = useRouter()
 const userId = ref('')
 const loading = ref(false)
@@ -16,7 +18,8 @@ const handleLogin = async () => {
   const result = await userStore.login(idNum)
   loading.value = false
   if (result) {
-    router.push('/')
+    await bookStore.getFavorBooks(userStore.userId!)
+    router.back()
   } else {
     error.value = userStore.error || '登录失败，请输入有效ID'
   }

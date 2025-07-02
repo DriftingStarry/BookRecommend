@@ -52,3 +52,50 @@ export async function getBookRecommend(id:number, by:'user'|'book'):Promise<Resp
     console.log(data)
     return data
 }
+
+/**
+ * 
+ * @param id 用户 ID
+ * @returns 图书 id 列表
+ */
+export async function getBookFavor(userId:number) {
+  const api = createBookApi()
+  const data = (await api.get<Response<number[]>>('/user/favor', {params:{userId:userId}})).data
+  console.log(data)
+  return data
+}
+
+/**
+ * 删除喜爱书籍
+ * @param userId 用户 id
+ * @param bookId 书籍 id
+ * @returns 成功与否
+ */
+export async function delBookFavor(userId:number, bookId: number) {
+  const api = createBookApi()
+  const formData = new FormData()
+  formData.append('userId', userId.toString())
+  formData.append('bookId', bookId.toString())
+  const data = (await api.delete<Response<boolean>>('/user/favor', {
+    data: formData,
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })).data
+  return data
+}
+
+/**
+ * 添加喜爱书籍
+ * @param userId 用户 id
+ * @param bookId 书籍 id
+ * @returns 成功与否
+ */
+export async function addBookFavor(userId:number, bookId:number) {
+  const api = createBookApi()
+  const formData = new FormData()
+  formData.append('userId', userId.toString())
+  formData.append('bookId', bookId.toString())
+  console.log(formData)
+  const data = (await api.postForm<Response<boolean>>('/user/favor', formData,
+  )).data
+  return data
+}
