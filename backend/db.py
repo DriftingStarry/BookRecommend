@@ -77,4 +77,80 @@ def getBooksByPage(page: int, page_size: int)->tuple[tuple[tuple[int,str,str,str
     conn.close()
     return data, total
     
-    
+def addFavorBook(userId:int, bookId:int):
+    conn = pymysql.connect(
+        host=MYSQL_HOST,
+        port=MYSQL_PORT,
+        user=MYSQL_USER,
+        password=MYSQL_PASSWORD,
+        database=MYSQL_DB,
+        charset='utf8mb4'
+    )
+    cursor = conn.cursor()
+    try:
+        # 校验是否已存在
+        cursor.execute("SELECT 1 FROM favor WHERE userId=%s AND bookId=%s", (userId, bookId))
+        if cursor.fetchone():
+            cursor.close()
+            conn.close()
+            return False, '已经喜爱书籍'
+        # 插入新记录
+        cursor.execute("INSERT INTO favor (userId, bookId) VALUES (%s, %s)", (userId, bookId))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True, '添加成功'
+    except Exception as e:
+        conn.rollback()
+        cursor.close()
+        conn.close()
+        return False, str(e)
+
+def delFavorBook(userId:int, bookId:int):
+    conn = pymysql.connect(
+        host=MYSQL_HOST,
+        port=MYSQL_PORT,
+        user=MYSQL_USER,
+        password=MYSQL_PASSWORD,
+        database=MYSQL_DB,
+        charset='utf8mb4'
+    )
+    cursor = conn.cursor()
+    try:
+        cursor.execute("DELETE FROM favor WHERE userId=%s AND bookId=%s", (userId, bookId))
+        conn.commit()
+        affected = cursor.rowcount
+        cursor.close()
+        conn.close()
+        if affected > 0:
+            return True, '删除成功'
+        else:
+            return False, '未找到记录'
+    except Exception as e:
+        conn.rollback()
+        cursor.close()
+        conn.close()
+        return False, str(e)
+
+def getFavorBooks(userId:int)->tuple[tuple[int]]:
+    conn = pymysql.connect(
+        host=MYSQL_HOST,
+        port=MYSQL_PORT,
+        user=MYSQL_USER,
+        password=MYSQL_PASSWORD,
+        database=MYSQL_DB,
+        charset='utf8mb4'
+    )
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT bookId FROM favor WHERE userId=%s", (userId,))
+        result = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        # 返回 id 列表
+        print('re', result)
+        return result
+    except Exception as e:
+        cursor.close()
+        conn.close()
+        return ()
