@@ -58,9 +58,9 @@ export async function getBookRecommend(id:number, by:'user'|'book'):Promise<Resp
  * @param id 用户 ID
  * @returns 图书 id 列表
  */
-export async function getBookFavor(id:number) {
+export async function getBookFavor(userId:number) {
   const api = createBookApi()
-  const data = (await api.get<Response<number[]>>('/user/favor', {params:{id:id}})).data
+  const data = (await api.get<Response<number[]>>('/user/favor', {params:{userId:userId}})).data
   console.log(data)
   return data
 }
@@ -94,9 +94,8 @@ export async function addBookFavor(userId:number, bookId:number) {
   const formData = new FormData()
   formData.append('userId', userId.toString())
   formData.append('bookId', bookId.toString())
-  const data = (await api.post<Response<boolean>>('/user/favor', {
-    data: formData,
-    headers: { 'Content-Type': 'multipart/form-data' }
-  })).data
+  console.log(formData)
+  const data = (await api.postForm<Response<boolean>>('/user/favor', formData,
+  )).data
   return data
 }
