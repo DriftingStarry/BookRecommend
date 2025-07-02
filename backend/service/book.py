@@ -37,3 +37,14 @@ def getBookRecommend(by:str, id:int):
     print(res)
 
     return [getBookInfo(row[0]) for row in res]
+
+def add_favor_book(user_id: int, book_id: int):
+    return db.addFavorBook(user_id, book_id)
+
+def del_favor_book(user_id: int, book_id: int):
+    return db.delFavorBook(user_id, book_id)
+
+def get_favor_books(user_id: int):
+    bookIds = db.getFavorBooks(user_id)
+    print(bookIds)
+    return [row[0] for row in bookIds]
