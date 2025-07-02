@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from models.Book import Book
 import service.book as bookService
 
 app = Flask(__name__)
@@ -56,6 +55,44 @@ def getRecommend():
             book.to_dict() for book in books
         ]
     })
+
+@app.route('/user/favor', methods=['GET', 'POST', 'DELETE'])
+def favor_handler():
+    if request.method == 'GET':
+        user_id = int(request.args.get('userId'))
+        print(user_id)
+        if not user_id:
+            return jsonify({"code": 400, "msg": "缺少 userId", "data": None})
+        try:
+            user_id = int(user_id)
+        except:
+            return jsonify({"code": 400, "msg": "userId 格式错误", "data": None})
+        book_ids = bookService.get_favor_books(user_id)
+        return jsonify({"code": 200, "msg": "查询成功", "data": book_ids})
+    elif request.method == 'POST':
+        user_id = request.form.get('userId')
+        book_id = request.form.get('bookId')
+        if not user_id or not book_id:
+            return jsonify({"code": 400, "msg": "缺少 userId 或 bookId", "data": None})
+        try:
+            user_id = int(user_id)
+            book_id = int(book_id)
+        except:
+            return jsonify({"code": 400, "msg": "userId 或 bookId 格式错误", "data": None})
+        success, msg = bookService.add_favor_book(user_id, book_id)
+        return jsonify({"code": 200 if success else 400, "msg": msg, "data": success})
+    elif request.method == 'DELETE':
+        user_id = request.form.get('userId')
+        book_id = request.form.get('bookId')
+        if not user_id or not book_id:
+            return jsonify({"code": 400, "msg": "缺少 userId 或 bookId", "data": None})
+        try:
+            user_id = int(user_id)
+            book_id = int(book_id)
+        except:
+            return jsonify({"code": 400, "msg": "userId 或 bookId 格式错误", "data": None})
+        success, msg = bookService.del_favor_book(user_id, book_id)
+        return jsonify({"code": 200 if success else 400, "msg": msg, "data": success})
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
