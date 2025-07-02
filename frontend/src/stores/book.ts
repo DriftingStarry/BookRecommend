@@ -247,6 +247,7 @@ export const useBookStore = defineStore('book', () => {
     error,
     currentPage,
     pageSize,
+    favorBooks,
     
     // 计算属性
     hasMoreBooks,
