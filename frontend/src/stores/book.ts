@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Book, Response } from '../models'
-import { getBookInfo, getBookList, getBookRecommend } from '../api'
+import { addBookFavor, delBookFavor, getBookFavor, getBookInfo, getBookList, getBookRecommend } from '../api'
 
 export const useBookStore = defineStore('book', () => {
   // 状态定义
   const bookDetail = ref<Book | null>(null)
+  const favorBooks = ref<Book[]>([])
   const bookList = ref<Book[]>([])
   const totalBooks = ref(0)
   // 推荐分离
@@ -129,6 +130,65 @@ export const useBookStore = defineStore('book', () => {
       loading.value = false
     }
   }
+
+  const getFavorBooks = async (id:number) => {
+    try {
+      loading.value = true
+      error.value = null
+      const response: Response<Book[]> = await getBookFavor(id)
+      if (response.code === 200) {
+        favorBooks.value = response.data
+        return response.data
+      } else {
+        error.value = response.message || '获取喜爱书籍失败'
+        throw new Error(response.message || '获取喜爱书籍失败')
+      }
+    } 
+    catch (err) {
+      error.value = err instanceof Error ? err.message : '获取相关推荐失败'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const delFavorBook = async (userId:number, bookId:number) => {
+    try {
+      loading.value = true
+      error.value = null
+      const response: Response<boolean> = await delBookFavor(userId, bookId)
+      if (response.code === 200) {
+        return response.data
+      } else {
+        error.value = response.message
+        throw new Error(response.message)
+      }
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : '取消喜欢失败'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const addFavorBook = async (userId:number, bookId:number) => {
+    try {
+      loading.value = true
+      error.value = null
+      const response: Response<boolean> = await addBookFavor(userId, bookId)
+      if (response.code === 200) {
+        return response.data
+      } else {
+        error.value = response.message
+        throw new Error(response.message)
+      }
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : '取消喜欢失败'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
   
   // 加载更多图书
   const loadMoreBooks = async () => {
@@ -165,6 +225,7 @@ export const useBookStore = defineStore('book', () => {
   // 重置store状态
   const resetStore = () => {
     bookDetail.value = null
+    favorBooks.value = []
     bookList.value = []
     totalBooks.value = 0
     homeRecommendedBooks.value = []
@@ -203,6 +264,9 @@ export const useBookStore = defineStore('book', () => {
     clearBookDetail,
     clearHomeRecommendations,
     clearDetailRecommendations,
-    resetStore
+    resetStore,
+    getFavorBooks,
+    addFavorBook,
+    delFavorBook
   }
 }) 
