@@ -52,3 +52,51 @@ export async function getBookRecommend(id:number, by:'user'|'book'):Promise<Resp
     console.log(data)
     return data
 }
+
+/**
+ * 
+ * @param id 用户 ID
+ * @returns 图书列表
+ */
+export async function getBookFavor(id:number) {
+  const api = createBookApi()
+  const data = (await api.get<Response<Book[]>>('/favorbook', {params:{id:id}})).data
+  console.log(data)
+  return data
+}
+
+/**
+ * 删除喜爱书籍
+ * @param userId 用户 id
+ * @param bookId 书籍 id
+ * @returns 成功与否
+ */
+export async function delBookFavor(userId:number, bookId: number) {
+  const api = createBookApi()
+  const formData = new FormData()
+  formData.append('userId', userId.toString())
+  formData.append('bookId', bookId.toString())
+  const data = (await api.delete<Response<boolean>>('/favor', {
+    data: formData,
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })).data
+  return data
+}
+
+/**
+ * 添加喜爱书籍
+ * @param userId 用户 id
+ * @param bookId 书籍 id
+ * @returns 成功与否
+ */
+export async function addBookFavor(userId:number, bookId:number) {
+  const api = createBookApi()
+  const formData = new FormData()
+  formData.append('userId', userId.toString())
+  formData.append('bookId', bookId.toString())
+  const data = (await api.post<Response<boolean>>('/favor', {
+    data: formData,
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })).data
+  return data
+}
