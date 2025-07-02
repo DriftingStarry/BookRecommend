@@ -10,11 +10,40 @@
 
 ## 前端
 
-vue3 全家桶 + element plus
+vue3 全家桶 + element plus, 使用 pnpm 作为包管理器
+
+### 构建
+
+> 需要 node22+ 环境, 安装 pnpm
+
+1. 进入 frontend 目录  
+2. 在目录下的 .env.production 内将 apiUrl 为实际后端部署 url  
+3. 运行
+
+  ```bash
+  pnpm build
+  ```
+
+构建产物存在目录下的 dist 目录内, 为静态页面, 使用配置反向代理即可部署
 
 ## 后端
 
 python flask
+
+### 部署
+
+1. 进入 backend 目录
+2. 安装 requirements.txt 的库
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. 启动项目, 将监听 5000 端口
+
+   ```bash
+   python main.py
+   ```
 
 ### 数据库设计
 
