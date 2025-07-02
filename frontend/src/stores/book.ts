@@ -6,7 +6,7 @@ import { addBookFavor, delBookFavor, getBookFavor, getBookInfo, getBookList, get
 export const useBookStore = defineStore('book', () => {
   // 状态定义
   const bookDetail = ref<Book | null>(null)
-  const favorBooks = ref<Book[]>([])
+  const favorBooks = ref<number[]>([])
   const bookList = ref<Book[]>([])
   const totalBooks = ref(0)
   // 推荐分离
@@ -135,7 +135,7 @@ export const useBookStore = defineStore('book', () => {
     try {
       loading.value = true
       error.value = null
-      const response: Response<Book[]> = await getBookFavor(id)
+      const response: Response<number[]> = await getBookFavor(id)
       if (response.code === 200) {
         favorBooks.value = response.data
         return response.data

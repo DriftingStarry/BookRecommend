@@ -56,11 +56,11 @@ export async function getBookRecommend(id:number, by:'user'|'book'):Promise<Resp
 /**
  * 
  * @param id 用户 ID
- * @returns 图书列表
+ * @returns 图书 id 列表
  */
 export async function getBookFavor(id:number) {
   const api = createBookApi()
-  const data = (await api.get<Response<Book[]>>('/favorbook', {params:{id:id}})).data
+  const data = (await api.get<Response<number[]>>('/favorbook', {params:{id:id}})).data
   console.log(data)
   return data
 }
