@@ -63,6 +63,7 @@ onUnmounted(() => {
               <el-button type="primary" @click="handleLogin">登录</el-button>
             </template>
             <template v-else-if="isLoggedIn">
+              <el-button type="success" @click="() => router.push('/favor')">我的喜爱</el-button>
               <span class="welcome">欢迎 {{ userId }}</span>
               <el-button type="info" @click="handleLogout">登出</el-button>
             </template>

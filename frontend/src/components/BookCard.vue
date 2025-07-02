@@ -74,6 +74,9 @@ const formatCount = (count: number | string | undefined) => {
         </el-tag>
       </div>
     </div>
+    <div class="card-footer">
+      <slot name="footer"></slot>
+    </div>
   </el-card>
 </template>
 
@@ -216,5 +219,10 @@ const formatCount = (count: number | string | undefined) => {
   color: #909399;
   margin: 4px 0 0 0;
   line-height: 1.2;
+}
+
+.card-footer {
+  margin-top: 12px;
+  text-align: right;
 }
 </style> 
