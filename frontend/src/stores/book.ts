@@ -157,7 +157,7 @@ export const useBookStore = defineStore('book', () => {
       loading.value = true
       error.value = null
       const response: Response<boolean> = await delBookFavor(userId, bookId)
-      if (response.code === 200) {
+      if (response.code === 200 && response.data) {
         return response.data
       } else {
         error.value = response.message
@@ -176,7 +176,7 @@ export const useBookStore = defineStore('book', () => {
       loading.value = true
       error.value = null
       const response: Response<boolean> = await addBookFavor(userId, bookId)
-      if (response.code === 200) {
+      if (response.code === 200 && response.data) {
         return response.data
       } else {
         error.value = response.message
