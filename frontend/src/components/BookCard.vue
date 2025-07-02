@@ -81,6 +81,9 @@ const formatCount = (count: number | string | undefined) => {
 .book-card {
   width: 100%;
   height: 100%;
+  max-width: 320px;
+  min-width: 0;
+  box-sizing: border-box;
   transition: all 0.3s ease;
   cursor: pointer;
 }
@@ -115,6 +118,9 @@ const formatCount = (count: number | string | undefined) => {
 
 .book-info {
   padding: 0 4px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .book-title {
@@ -128,6 +134,7 @@ const formatCount = (count: number | string | undefined) => {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  word-break: break-all;
 }
 
 .book-author {
@@ -137,6 +144,7 @@ const formatCount = (count: number | string | undefined) => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  word-break: break-all;
 }
 
 .book-meta {
