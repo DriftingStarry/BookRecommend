@@ -44,7 +44,7 @@ onUnmounted(() => {
       <!-- 头部 -->
       <el-header class="app-header">
         <div class="header-content">
-          <div class="logo">
+          <div class="logo" style="cursor: pointer;" @click="router.push('/')">
             <el-icon :size="32" color="#409EFF">
               <Reading />
             </el-icon>
