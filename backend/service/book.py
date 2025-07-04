@@ -4,7 +4,7 @@ from models.Book import Book
 def getBookInfo(id:int):
     res = db.getBookInfo(id)
     # id, goodreadsId, authors, title, lang, year, avgRating, cover
-    print(res)
+    # print(res)
     return Book(
         id=res[0],
         goodreadsId=res[1],
@@ -34,7 +34,7 @@ def getBooks(page:int, pageSize:int):
 def getBookRecommend(by:str, id:int):
     if by != 'book' and by != 'user': return []
     res = db.getBookRecommend(id) if by == 'book' else db.getUserRecommend(id)
-    print(res)
+    # print(res)
 
     return [getBookInfo(row[0]) for row in res]
 
@@ -46,5 +46,5 @@ def del_favor_book(user_id: int, book_id: int):
 
 def get_favor_books(user_id: int):
     bookIds = db.getFavorBooks(user_id)
-    print(bookIds)
+    # print(bookIds)
     return [row[0] for row in bookIds]

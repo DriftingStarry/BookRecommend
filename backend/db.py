@@ -148,7 +148,7 @@ def getFavorBooks(userId:int)->tuple[tuple[int]]:
         cursor.close()
         conn.close()
         # 返回 id 列表
-        print('re', result)
+        # print('re', result)
         return result
     except Exception as e:
         cursor.close()
