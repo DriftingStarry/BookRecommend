@@ -79,8 +79,8 @@ const goToGoodreads = () => {
   }
 }
 
-const goBackHome = () => {
-  router.push('/')
+const goBack = () => {
+  router.back()
 }
 
 const formatCount = (count: number | string | undefined) => {
@@ -94,7 +94,7 @@ const formatCount = (count: number | string | undefined) => {
 
 <template>
   <div class="book-detail-view">
-    <el-button class="back-btn" circle size="large" @click="goBackHome">
+    <el-button class="back-btn" circle size="large" @click="goBack">
       <el-icon><ArrowLeft /></el-icon>
     </el-button>
     <el-card v-if="loading" class="loading-card">
