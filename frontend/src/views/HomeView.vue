@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { useBookStore } from '../stores'
 import BookCard from '../components/BookCard.vue'
 import { useUserStore } from '../stores'
@@ -8,6 +8,19 @@ const userStore = useUserStore()
 
 // 使用图书store
 const bookStore = useBookStore()
+
+const randomRecommendedBooks = ref<any[]>([])
+
+function pickRandomBooks() {
+  const all = bookStore.homeRecommendedBooks
+  if (!all || all.length === 0) {
+    randomRecommendedBooks.value = []
+    return
+  }
+  // 随机选取三本
+  const shuffled = all.slice().sort(() => Math.random() - 0.5)
+  randomRecommendedBooks.value = shuffled.slice(0, 3)
+}
 
 // 组件挂载时加载数据
 onMounted(async () => {
@@ -19,10 +32,14 @@ onMounted(async () => {
     if (bookStore.homeRecommendedBooks.length === 0) {
       await bookStore.getHomeRecommendations(1, 'user')
     }
+    pickRandomBooks()
   } catch (error) {
     console.error('加载数据失败:', error)
   }
 })
+
+// 监听推荐书籍变化自动刷新随机三本
+watch(() => bookStore.homeRecommendedBooks, pickRandomBooks, { deep: true })
 
 // 加载更多图书
 const handleLoadMore = async () => {
@@ -52,6 +69,7 @@ const handleRefreshRecommendations = async () => {
     } else {
       await bookStore.getHomeRecommendations(Math.floor(Math.random() * 10000), 'book')
     }
+    pickRandomBooks()
   } catch (error) {
     console.error('刷新推荐图书失败:', error)
   }
@@ -97,9 +115,9 @@ const handleRefreshRecommendations = async () => {
       </div>
 
       <!-- 推荐图书网格 -->
-      <div v-else-if="bookStore.homeRecommendedBooks && bookStore.homeRecommendedBooks.length > 0" class="books-grid recommended-grid">
+      <div v-else-if="randomRecommendedBooks && randomRecommendedBooks.length > 0" class="books-grid recommended-grid">
         <div
-          v-for="book in bookStore.homeRecommendedBooks"
+          v-for="book in randomRecommendedBooks"
           :key="book.id"
           class="book-item"
         >
