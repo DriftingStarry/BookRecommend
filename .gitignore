@@ -20,7 +20,7 @@ coverage
 # Editor directories and files
 */.vscode/*
 */!.vscode/extensions.json
-*/.idea
+.idea
 */*.suo
 */*.ntvs*
 */*.njsproj
@@ -35,3 +35,7 @@ __pycache__
 
 # 原始数据
 backend/utils/origin_data
+
+# 默认忽略的文件
+/shelf/
+/workspace.xml
