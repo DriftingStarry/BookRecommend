@@ -39,8 +39,8 @@ cursor = conn.cursor()
 create_table_sql = f"""
 CREATE TABLE IF NOT EXISTS {MYSQL_TABLE} (
     favor_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    book_id INT
+    userId INT,
+    bookId INT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 """
 cursor.execute(create_table_sql)
