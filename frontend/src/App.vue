@@ -73,7 +73,9 @@ onUnmounted(() => {
 
       <!-- 主要内容 -->
       <el-main class="app-main">
-        <router-view />
+        <transition name="fade-router" mode="out-in">
+          <router-view />
+        </transition>
       </el-main>
 
       <!-- 底部 -->
@@ -208,5 +210,15 @@ onUnmounted(() => {
   .search-box {
     max-width: 100%;
   }
+}
+
+.fade-router-enter-active, .fade-router-leave-active {
+  transition: opacity 0.5s cubic-bezier(.55,0,.1,1);
+}
+.fade-router-enter-from, .fade-router-leave-to {
+  opacity: 0;
+}
+.fade-router-enter-to, .fade-router-leave-from {
+  opacity: 1;
 }
 </style>
