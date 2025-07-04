@@ -13,7 +13,7 @@ MYSQL_DB = 'books'
 MYSQL_TABLE = 'bookInfo'
 
 # 需要导入的字段
-csv_path = './backend/utils/origin_data/books.csv'
+csv_path = '.origin_data/books.csv'
 use_columns = [
     'book_id',
     'goodreads_book_id',
