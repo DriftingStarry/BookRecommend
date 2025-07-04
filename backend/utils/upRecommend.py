@@ -121,8 +121,8 @@ def generate_user_recommend(top_k=5, max_sim_users=10):
             print(f"[userRecommend-ItemCF] 已处理 {idx+1}/{total} 个用户")
 
 if __name__ == '__main__':
-    # print("开始生成 bookRecommend...")
-    # generate_book_recommend(top_k=5)
+    print("开始生成 bookRecommend...")
+    generate_book_recommend(top_k=5)
     print("开始生成 userRecommend...")
     generate_user_recommend(top_k=5)
     print("全部推荐生成完毕！")
