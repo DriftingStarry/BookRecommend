@@ -5,8 +5,8 @@
 图书推荐系统, 数据来自 [goodbooks 10k](https://github.com/zygmuntz/goodbooks-10k)
 
 - 实现功能
-  - [ ] 根据图书推荐图书
-  - [ ] 根据用户推荐图书
+  - [x] 根据图书推荐图书
+  - [x] 根据用户推荐图书
 
 ## 前端
 
@@ -44,6 +44,8 @@ python flask
    ```bash
    python main.py
    ```
+
+4. 设置定时计划, 定期执行 backend/utils/upRecommend.py 对推荐内容进行更新
 
 ### 数据库设计
 
