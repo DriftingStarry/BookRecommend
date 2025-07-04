@@ -18,7 +18,6 @@ const handleLogin = async () => {
   const result = await userStore.login(idNum)
   loading.value = false
   if (result) {
-    await bookStore.getFavorBooks(userStore.userId!)
     router.back()
   } else {
     error.value = userStore.error || '登录失败，请输入有效ID'

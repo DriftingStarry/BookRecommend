@@ -18,6 +18,10 @@ export const useUserStore = defineStore('user', () => {
         userId.value = id
         isLoggedIn.value = true
         error.value = null
+
+        const bookStore = useBookStore()
+        await bookStore.getFavorBooks(userId.value)
+        await bookStore.getHomeRecommendations(userId.value, 'user')
         return true
     }
 
