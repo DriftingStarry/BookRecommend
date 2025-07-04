@@ -1,4 +1,6 @@
 import pymysql
+from collections import defaultdict, Counter
+import random
 
 MYSQL_HOST = 'localhost'
 MYSQL_PORT = 3306
@@ -82,36 +84,45 @@ def generate_book_recommend(top_k=5):
         if (idx+1) % 10 == 0 or idx == total-1:
             print(f"[bookRecommend] 已处理 {idx+1}/{total} 本书")
 
-def generate_user_recommend(top_k=5):
-    users = get_all_users()
-    books = get_all_books()
-    book_dict = {b[0]: b for b in books}
+def generate_user_recommend(top_k=5, max_sim_users=10):
+    # 1. 一次性加载 favor 表
+    conn = pymysql.connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER, password=MYSQL_PASSWORD, database=MYSQL_DB, charset='utf8mb4')
+    cursor = conn.cursor()
+    cursor.execute("SELECT userId, bookId FROM favor")
+    favor_records = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    print("load table fin")
+
+    user_favors = defaultdict(set)
+    book_users = defaultdict(set)
+    for userId, bookId in favor_records:
+        user_favors[userId].add(bookId)
+        book_users[bookId].add(userId)
+
+    users = list(user_favors.keys())
     total = len(users)
     for idx, user in enumerate(users):
-        favors = get_user_favors(user)
-        recs = set()
+        favors = user_favors[user]
+        rec_count = Counter()
         for fav in favors:
-            if fav not in book_dict:
-                continue
-            # 找相似书
-            sims = []
-            for other in books:
-                if other[0] == fav:
+            sim_users = list(book_users[fav])
+            if len(sim_users) > max_sim_users:
+                sim_users = random.sample(sim_users, max_sim_users)
+            for sim_user in sim_users:
+                if sim_user == user:
                     continue
-                sim = book_similarity(book_dict[fav], other)
-                sims.append((other[0], sim))
-            sims.sort(key=lambda x: x[1], reverse=True)
-            for bid, s in sims[:top_k]:
-                if s > 0:
-                    recs.add(bid)
-        recs = list(recs - set(favors))[:top_k]
+                for b in user_favors[sim_user]:
+                    if b not in favors:
+                        rec_count[b] += 1
+        recs = [b for b, _ in rec_count.most_common(top_k)]
         insert_user_recommend(user, recs)
         if (idx+1) % 10 == 0 or idx == total-1:
-            print(f"[userRecommend] 已处理 {idx+1}/{total} 个用户")
+            print(f"[userRecommend-ItemCF] 已处理 {idx+1}/{total} 个用户")
 
 if __name__ == '__main__':
-    print("开始生成 bookRecommend...")
-    generate_book_recommend(top_k=5)
+    # print("开始生成 bookRecommend...")
+    # generate_book_recommend(top_k=5)
     print("开始生成 userRecommend...")
     generate_user_recommend(top_k=5)
     print("全部推荐生成完毕！")
