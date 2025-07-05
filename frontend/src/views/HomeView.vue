@@ -46,7 +46,7 @@ const handleLoadMore = async () => {
   try {
     await bookStore.loadMoreBooks()
     // 加载后自动滚动到底部
-    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })
+    // window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })
   } catch (error) {
     console.error('加载更多图书失败:', error)
   }
