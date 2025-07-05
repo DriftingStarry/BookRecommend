@@ -13,7 +13,7 @@ MYSQL_DB = 'books'
 MYSQL_TABLE = 'bookInfo'
 
 # 需要导入的字段
-csv_path = '.origin_data/books.csv'
+csv_path = 'origin_data/books.csv'
 use_columns = [
     'book_id',
     'goodreads_book_id',
@@ -92,6 +92,7 @@ total = 0
 for chunk in pd.read_csv(csv_path, usecols=use_columns, chunksize=chunksize):
     chunk = chunk.rename(columns=field_map)
     data = []
+    chunk['id'] -= 1
     for idx, row in chunk.iterrows():
         nan_fields = []
         for col in ['id', 'goodreadsId', 'authors', 'title', 'lang', 'year', 'avgRating', 'image_url', 'ratings_count']:

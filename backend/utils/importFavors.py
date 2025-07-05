@@ -11,7 +11,7 @@ MYSQL_DB = 'books'
 MYSQL_TABLE = 'favor'
 
 # 需要导入的字段
-csv_path = '.origin_data/favors.csv'
+csv_path = 'origin_data/favors.csv'
 use_columns = [
     'user_id',
     'item_id'
