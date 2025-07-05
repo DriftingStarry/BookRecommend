@@ -2,7 +2,9 @@
 
 > 请使用 [Git Commit Angular](https://juejin.cn/post/7126022242508472351) 提交规范进行提交
 
-图书推荐系统, 数据来自 [goodbooks 10k](https://github.com/zygmuntz/goodbooks-10k)
+图书推荐系统, 数据来自 [goodbooks 10k](https://github.com/zygmuntz/goodbooks-10k)  
+
+demo 地址 [http://121.41.114.45:10000/](http://121.41.114.45:10000/)
 
 - 实现功能
   - [x] 根据图书推荐图书
