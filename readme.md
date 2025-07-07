@@ -12,7 +12,22 @@ demo 地址 [http://121.41.114.45:10000/](http://121.41.114.45:10000/)
 
 ## 前端
 
-vue3 全家桶 + element plus, 使用 pnpm 作为包管理器
+基于 Vue3 + Vite + Pinia + Element Plus 实现
+
+### 整体架构
+
+- 使用 Vue3 组合式 API，提升代码可维护性和复用性。
+- 状态管理采用 Pinia，便于全局状态（如用户、图书、收藏等）集中管理。
+- 路由采用 vue-router，支持多页面跳转和参数传递。
+- 与后端通过 axios 进行 RESTful API 通信，接口统一封装在 src/api。
+
+### 页面设计
+
+- views 目录下包含主要页面：
+  - HomeView.vue：主页，展示图书列表和推荐内容。
+  - BookDetailView.vue：图书详情页，展示单本书详细信息及相关推荐。
+  - FavorView.vue：用户收藏页，展示用户喜欢的书籍。
+  - LoginView.vue：登录页，支持用户 ID 登录。
 
 ### 构建
 
@@ -30,7 +45,32 @@ vue3 全家桶 + element plus, 使用 pnpm 作为包管理器
 
 ## 后端
 
-python flask
+基于 Python Flask 实现, 数据库采用 MySQL
+
+### 整体架构
+
+- 采用 Flask 框架，结构清晰，易于扩展。
+- 主要分为 API 层（main.py）、服务层（service/）、数据模型层（models/）、工具层（utils/）。
+
+### 主要模块
+
+- models/Book.py：定义图书数据模型。
+- service/book.py：封装图书相关的业务逻辑。
+- db.py：数据库连接与操作封装。
+- utils/ 目录：包含数据导入、推荐算法等辅助脚本。
+
+### 推荐算法
+
+- 推荐核心在 utils/upRecommend.py，定时运行，自动更新推荐内容。
+- 推荐策略：
+  - 基于内容的图书相似推荐（作者、语言、年份等特征）
+  - 基于物品/用户协同过滤的个性化推荐（UserCF/ItemCF）
+- 推荐结果写入 bookRecommend、userRecommend 两张表，供前端实时查询。
+
+### 数据库交互
+
+- 采用 pymysql 连接 MySQL，所有数据操作均通过 SQL 实现。
+- 数据表设计简洁，便于扩展。
 
 ### 部署
 
