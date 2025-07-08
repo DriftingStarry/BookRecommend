@@ -41,7 +41,7 @@ demo 地址 [http://121.41.114.45:10000/](http://121.41.114.45:10000/)
   pnpm build
   ```
 
-构建产物存在目录下的 dist 目录内, 为静态页面, 使用配置反向代理即可部署
+构建产物存在目录下的 dist 目录内, 为静态页面, 配置静态网站托管即可部署
 
 ## 后端
 
@@ -81,13 +81,15 @@ demo 地址 [http://121.41.114.45:10000/](http://121.41.114.45:10000/)
    pip install -r requirements.txt
    ```
 
-3. 启动项目, 将监听 5000 端口
+3. 部署 MySQL 服务, 按 db.py 中的定义配置数据库用户与表
+4. 在 utils 目录下创建 origin_data, 将对应的数据文件放入其中, 分别运行 importBooks.py 与 importFavors.py, 将数据导入数据库中
+5. 启动项目, 将监听 5000 端口
 
    ```bash
    python main.py
    ```
 
-4. 设置定时计划, 定期执行 backend/utils/upRecommend.py 对推荐内容进行更新
+6. 设置定时计划, 定期执行 backend/utils/upRecommend.py 对推荐内容进行更新
 
 ### 数据库设计
 

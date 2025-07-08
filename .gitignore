@@ -39,3 +39,4 @@ backend/utils/origin_data
 # 默认忽略的文件
 /shelf/
 /workspace.xml
+*.docx
