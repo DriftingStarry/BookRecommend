@@ -1,4 +1,3 @@
-# recommender.py
 import pandas as pd
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
@@ -26,7 +25,7 @@ class BookRecommender:
         self.user_distances, self.user_indices = self.user_model.kneighbors(self.user_sparse)
         self.item_distances, self.item_indices = self.item_model.kneighbors(self.item_sparse)
 
-    def recommend_for_user(self, user_id, top_k=5):
+    def recommend_for_user(self, user_id, top_k=1):
         if user_id not in self.user_id_to_index:
             return []
         user_idx = self.user_id_to_index[user_id]
@@ -45,14 +44,14 @@ class BookRecommender:
         sorted_books = sorted(candidate_books.items(), key=lambda x: x[1], reverse=True)
         return [book for book, _ in sorted_books[:top_k]]
 
-    def similar_books(self, item_id, top_k=5):
+    def similar_books(self, item_id, top_k=1):
         if item_id not in self.item_id_to_index:
             return []
         item_idx = self.item_id_to_index[item_id]
         sim_items = self.item_indices[item_idx][1:top_k + 1]
         return [self.index_to_item_id[idx] for idx in sim_items]
 
-    def generate_all_recommendations(self, top_k=5, output_csv='data/recommend_result.csv'):
+    def generate_all_recommendations(self, top_k=1, output_csv='data/recommend_result.csv'):
         records = []
 
         for user_id in self.user_ids:
@@ -69,9 +68,8 @@ class BookRecommender:
                 'user_based': list(user_based_recommend),
                 'item_based': list(book_based_recommend)
             })
-
         pd.DataFrame(records).to_csv(output_csv, index=False)
 
 if __name__ == '__main__':
     recommender = BookRecommender('data/train_dataset.csv')
-    recommender.generate_all_recommendations(top_k=5)
+    recommender.generate_all_recommendations(top_k=1)

@@ -18,6 +18,5 @@ class RecommendationGetter:
 if __name__ == "__main__":
     re = RecommendationGetter()
     u, i = re.get_user_recommendations(0)
-    print(u)
-    print()
-    print(i)
+    df = pd.DataFrame(u, i)
+    print(df)
